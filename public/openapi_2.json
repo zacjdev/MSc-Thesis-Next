@@ -1,0 +1,117 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MyApp API",
+    "version": "1.0.0",
+    "description": "API documentation generated from Next.js API routes"
+  },
+  "paths": {
+    "/api/admin/articles/{id}": {
+      "put": {
+        "summary": "Update an article",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "MongoDB ObjectId of the article",
+            "example": "64f1c3a2b5d4e5f678901234"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "Updated Article Title" },
+                  "content": { "type": "string", "example": "This is the updated content of the article." },
+                  "sportSlug": { "type": "string", "example": "soccer" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successfully updated" },
+          "404": { "description": "Article not found" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "delete": {
+        "summary": "Delete an article",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "MongoDB ObjectId of the article",
+            "example": "64f1c3a2b5d4e5f678901234"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Successfully deleted" },
+          "404": { "description": "Article not found" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/api/admin/sports/{id}": {
+      "put": {
+        "summary": "Update a sport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "MongoDB ObjectId of the sport",
+            "example": "64f1c3a2b5d4e5f678901235"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "Basketball" },
+                  "description": { "type": "string", "example": "A team sport played on a court with a hoop." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successfully updated" },
+          "404": { "description": "Sport not found" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a sport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "MongoDB ObjectId of the sport",
+            "example": "64f1c3a2b5d4e5f678901235"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Successfully deleted" },
+          "404": { "description": "Sport not found" },
+          "500": { "description": "Server error" }
+        }
+      }
+    }
+  }
+}

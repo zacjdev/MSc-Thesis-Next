@@ -1,0 +1,1199 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MyApp API",
+    "version": "1.0.0",
+    "description": "API documentation generated from Next.js API routes"
+  },
+  "paths": {
+    "/api/articles": {
+      "get": {
+        "summary": "Get articles (optionally filtered by sport)",
+        "description": "Retrieve all articles from the database.   Optionally filter results by `sport` query parameter (case-insensitive).   If `sport=all` or no parameter is provided, all articles are returned.\n",
+        "tags": [
+          "Articles"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sport",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter articles by sport slug (case-insensitive). Use \"all\" or omit to return everything.",
+            "example": "soccer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "MongoDB ObjectId"
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "Match Recap"
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "A detailed recap of yesterday's game."
+                      },
+                      "sportSlug": {
+                        "type": "string",
+                        "example": "soccer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/clubs": {
+      "get": {
+        "summary": "Fetch clubs with optional filtering, location, and pagination",
+        "tags": [
+          "Clubs"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sport",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter clubs by sport slug (case-insensitive). Use \"all\" for no filter."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter clubs by name (partial match)."
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Pagination page number."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "description": "Number of items per page."
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "schema": {
+              "type": "string",
+              "example": "40.7128,-74.0060"
+            },
+            "description": "Latitude and longitude to filter nearby clubs."
+          },
+          {
+            "in": "query",
+            "name": "distance",
+            "schema": {
+              "type": "number",
+              "default": 0
+            },
+            "description": "Distance in miles to filter clubs near the location."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of clubs merged with overrides."
+          },
+          "400": {
+            "description": "Invalid query parameters."
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "post": {
+        "summary": "Add or update events",
+        "tags": [
+          "Clubs"
+        ],
+        "description": "Accepts a single event object or an array of events.\nEvents are identified by a unique `hash`. Existing events with the same `hash` are deleted before inserting.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": null
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully inserted events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "insertedCount": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input (empty array or missing hash)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games": {
+      "post": {
+        "summary": "Add one or multiple games to the database",
+        "tags": [
+          "Games"
+        ],
+        "requestBody": {
+          "description": "Game object or array of game objects to insert",
+          "required": true,
+          "content": {
+            "application/json": null
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Games inserted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "insertedCount": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, missing games or hash field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/articles/{id}": {
+      "put": {
+        "summary": "Update an article",
+        "description": "Update title, content, or sportSlug of an article by its MongoDB ObjectId.",
+        "tags": [
+          "Articles"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "MongoDB ObjectId of the article"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Updated Article Title"
+                  },
+                  "content": {
+                    "type": "string",
+                    "example": "This is the updated content of the article."
+                  },
+                  "sportSlug": {
+                    "type": "string",
+                    "example": "soccer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          },
+          "404": {
+            "description": "Article not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an article",
+        "description": "Delete an article by its MongoDB ObjectId.",
+        "tags": [
+          "Articles"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "MongoDB ObjectId of the article"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted"
+          },
+          "404": {
+            "description": "Article not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/admin/articles": {
+      "get": {
+        "summary": "Get all articles",
+        "description": "Retrieve all articles from the database, sorted by name in ascending order.",
+        "tags": [
+          "Articles"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "MongoDB ObjectId"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "content": {
+                        "type": "string"
+                      },
+                      "slug": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create or update an article",
+        "description": "Insert a new article or update an existing one by slug or name (upsert).",
+        "tags": [
+          "Articles"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "New Article"
+                  },
+                  "content": {
+                    "type": "string",
+                    "example": "This is the content of the article."
+                  },
+                  "slug": {
+                    "type": "string",
+                    "example": "new-article"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created or updated"
+          },
+          "400": {
+            "description": "Missing required fields"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/admin/clubs": {
+      "get": {
+        "summary": "Get merged list of clubs",
+        "description": "Retrieve a combined list of clubs from the base `clubs` collection and the `clubs_override` collection. Overrides replace matching base clubs by `hash`.   New override clubs (not present in base) are also included.\n",
+        "tags": [
+          "Clubs"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of merged clubs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "hash": {
+                        "type": "string",
+                        "description": "Unique identifier for the club"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Club name"
+                      },
+                      "[ otherProps ]": {
+                        "description": "Any additional club fields from the database"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/admin/events": {
+      "get": {
+        "summary": "Get merged list of events",
+        "description": "Retrieve a combined list of events from the base `events` collection and the `events_override` collection. Overrides replace matching base events by `hash`.   New override events (not present in base) are also included.\n",
+        "tags": [
+          "Events"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of merged events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "hash": {
+                        "type": "string",
+                        "description": "Unique identifier for the event"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Event name"
+                      },
+                      "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Event date and time"
+                      },
+                      "[ otherProps ]": {
+                        "description": "Any additional event fields from the database"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/admin/games": {
+      "get": {
+        "summary": "Get merged list of games",
+        "description": "Retrieve a combined list of games from the base `games` collection and the `games_override` collection. Overrides replace matching base games by `hash`.   New override games (not present in base) are also included.\n",
+        "tags": [
+          "Games"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of merged games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "hash": {
+                        "type": "string",
+                        "description": "Unique identifier for the game"
+                      },
+                      "homeTeam": {
+                        "type": "string",
+                        "description": "Name of the home team"
+                      },
+                      "awayTeam": {
+                        "type": "string",
+                        "description": "Name of the away team"
+                      },
+                      "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Game date and time"
+                      },
+                      "[ otherProps ]": {
+                        "description": "Any additional game fields from the database"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/admin/override": {
+      "post": {
+        "summary": "Create or update an override entry",
+        "description": "Add or update an override document in the corresponding `{collection}_override` collection.   If a document with the given `hash` exists, it will be updated.   Otherwise, a new one will be inserted (upsert).\n",
+        "tags": [
+          "Overrides"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "collection",
+                  "hash",
+                  "data"
+                ],
+                "properties": {
+                  "collection": {
+                    "type": "string",
+                    "example": "games",
+                    "description": "Base collection name (e.g., `games`, `events`, `clubs`)"
+                  },
+                  "hash": {
+                    "type": "string",
+                    "description": "Unique identifier of the entity being overridden",
+                    "example": "abc123hash"
+                  },
+                  "data": {
+                    "type": "object",
+                    "description": "Override fields to apply",
+                    "example": {
+                      "name": "Custom Club Name",
+                      "date": "2025-08-20T19:00:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created or updated override",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "result": {
+                      "type": "object",
+                      "description": "MongoDB update result"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required fields"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/admin/reset": {
+      "post": {
+        "summary": "Reset base collections",
+        "description": "Deletes **all documents** from the base collections:   - `clubs`   - `events`   - `games`   This does not affect their `_override` counterparts.\n",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully cleared collections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "collection": {
+                            "type": "string",
+                            "example": "clubs"
+                          },
+                          "deletedCount": {
+                            "type": "integer",
+                            "example": 42
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/admin/sports/{id}": {
+      "put": {
+        "summary": "Update a sport",
+        "description": "Update the `name` or `description` of a sport by its MongoDB ObjectId.",
+        "tags": [
+          "Sports"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "MongoDB ObjectId of the sport"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Basketball"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A team sport played on a court with a hoop."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          },
+          "404": {
+            "description": "Sport not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a sport",
+        "description": "Delete a sport by its MongoDB ObjectId.",
+        "tags": [
+          "Sports"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "MongoDB ObjectId of the sport"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted"
+          },
+          "404": {
+            "description": "Sport not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/admin/sports": {
+      "get": {
+        "summary": "Get all sports",
+        "description": "Retrieve all sports from the database, sorted by name in ascending order.",
+        "tags": [
+          "Sports"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of sports",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "MongoDB ObjectId"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Basketball"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "A team sport played on a court with a hoop."
+                      },
+                      "slug": {
+                        "type": "string",
+                        "example": "basketball"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create or update a sport",
+        "description": "Insert a new sport or update an existing one by slug or name (upsert).",
+        "tags": [
+          "Sports"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Soccer"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A globally popular sport played with a ball and two goals."
+                  },
+                  "slug": {
+                    "type": "string",
+                    "example": "soccer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created or updated"
+          },
+          "400": {
+            "description": "Missing required fields"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/auth/{...nextauth}": {
+      "post": {
+        "summary": "Authenticate user with email and password",
+        "description": "Authenticate a user using their email and password via NextAuth Credentials Provider.   Returns a JWT session token on success.\n",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated, returns JWT session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jwt": {
+                      "type": "string",
+                      "description": "JSON Web Token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/docs": {
+      "get": {
+        "summary": "Serve Swagger UI for the API",
+        "description": "Renders the Swagger UI HTML page using the `public/openapi.json` specification.",
+        "responses": {
+          "200": {
+            "description": "HTML page containing Swagger UI",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/finder-data": {
+      "get": {
+        "summary": "Retrieve events and games with filters",
+        "description": "Returns a combined list of events and games, supporting filtering by sport, category, date range, time (upcoming/past), search, location, and distance.\nResults can be sorted and paginated.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search term applied to name, category, home/away teams, or competition."
+          },
+          {
+            "in": "query",
+            "name": "sport",
+            "schema": {
+              "type": "string",
+              "default": "all"
+            },
+            "description": "Filter by sport name."
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by category."
+          },
+          {
+            "in": "query",
+            "name": "startDate",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter items starting after this UNIX timestamp."
+          },
+          {
+            "in": "query",
+            "name": "endDate",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter items ending before this UNIX timestamp."
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string",
+              "default": "dateStart_asc"
+            },
+            "description": "Sorting option (e.g., dateStart_asc, distance_desc, name_asc)."
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number for pagination."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "description": "Number of items per page."
+          },
+          {
+            "in": "query",
+            "name": "includeEvents",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "Whether to include events in the response."
+          },
+          {
+            "in": "query",
+            "name": "includeGames",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "Whether to include games in the response."
+          },
+          {
+            "in": "query",
+            "name": "timeFilter",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "upcoming",
+                "past",
+                ""
+              ]
+            },
+            "description": "Filter by upcoming or past items."
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Location string to geocode for distance filtering."
+          },
+          {
+            "in": "query",
+            "name": "distance",
+            "schema": {
+              "type": "number"
+            },
+            "description": "Maximum distance in miles from the location."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of events and games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sports": {
+      "get": {
+        "summary": "Retrieve a list of all sports",
+        "tags": [
+          "Sports"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of sports retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "MongoDB document ID"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the sport"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Game": {
+        "type": "object",
+        "required": [
+          "hash"
+        ],
+        "properties": {
+          "hash": {
+            "type": "string",
+            "description": "Unique hash for the game"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the game"
+          },
+          "sport": {
+            "type": "string",
+            "description": "Type of sport"
+          },
+          "dateStart": {
+            "type": "integer",
+            "description": "Start timestamp"
+          },
+          "dateEnd": {
+            "type": "integer",
+            "description": "End timestamp"
+          },
+          "homeTeamName": {
+            "type": "string"
+          },
+          "awayTeamName": {
+            "type": "string"
+          },
+          "competitionName": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number"
+              },
+              "long": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

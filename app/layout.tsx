@@ -5,8 +5,8 @@ import Nav from "./core/nav.tsx";
 import './globals.css'
 
 export const metadata = {
-  title: "My App",
-  description: "This is a Next.js App Router example",
+  title: "SportHub App",
+  description: "SportHub Demo App",
 };
 
 export default function RootLayout({

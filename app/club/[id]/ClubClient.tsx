@@ -27,6 +27,8 @@ interface ClubClientProps {
 }
 
 export default function ClubClient({ club }: ClubClientProps) {
+
+  console.log("Rendering ClubClient for club:", club);
   return (
     <div className="p-6 bg-white max-w-3xl mx-auto">
       {/* Header */}
@@ -41,27 +43,6 @@ export default function ClubClient({ club }: ClubClientProps) {
           <p className="text-gray-500">{club.sport}</p>
         </div>
       </div>
-
-      {/* Location */}
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-1">Location</h2>
-        <p className="text-gray-700">{club.location.address}</p>
-      </div>
-
-      {/* Map */}
-      {club.location?.lat && club.location?.long && (
-        <MapContainer
-          center={[club.location.lat, club.location.long]}
-          zoom={15}
-          scrollWheelZoom={false}
-          className="mb-6 h-[600px] w-full rounded-lg"
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <Marker position={[club.location.lat, club.location.long]}>
-            <Popup>{club.name}</Popup>
-          </Marker>
-        </MapContainer>
-      )}
 
       {/* Links */}
       <div className="flex flex-wrap gap-4 mb-4">
@@ -96,6 +77,45 @@ export default function ClubClient({ club }: ClubClientProps) {
           </a>
         )}
       </div>
+      { club.description &&
+      <p className="mb-6 text-gray-700">{club.description}</p>
+      }
+
+      {/* Sitemap */}
+      { club.sitemap &&
+      <div>
+        <h2 className="text-xl font-semibold mb-1">Sitemap</h2>
+        <img 
+        alt={`${club.name} Sitemap`}
+        
+        src={club.sitemap}
+        className="mx-auto h-auto mb-6 rounded-lg border-2 border-gray-200 max-h-[400px] h-[400px]"
+        />
+      </div>
+      }
+
+      {/* Location */}
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold mb-1">Location</h2>
+        <p className="text-gray-700">{club.location.address}</p>
+      </div>
+
+      {/* Map */}
+      {club.location?.lat && club.location?.long && (
+        <MapContainer
+          center={[club.location.lat, club.location.long]}
+          zoom={15}
+          scrollWheelZoom={false}
+          className="mb-6 h-[600px] w-full rounded-lg"
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={[club.location.lat, club.location.long]}>
+            <Popup>{club.name}</Popup>
+          </Marker>
+        </MapContainer>
+      )}
+
+      
 
       {/* Source */}
       <div className="text-sm text-gray-400">

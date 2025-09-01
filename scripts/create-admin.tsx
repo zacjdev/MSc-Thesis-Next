@@ -24,9 +24,9 @@ async function createAdmin() {
       password: hashedPassword,
     });
 
-    console.log('✅ Admin user created');
+    console.log('Admin user created');
   } catch (error) {
-    console.error('❌ Failed to create admin:', error);
+    console.error('Failed to create admin:', error);
   } finally {
     await client.close();
   }
